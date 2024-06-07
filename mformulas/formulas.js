@@ -17,14 +17,14 @@ function ZKM(height,weight,old,active)
 {
 var zkm= (66.5 + (13,7 * weight) + (5 * height) - (6,8 * old))*active
 
-return zkm;
+return zkm.toFixed(2);
 }
 
 
 function ZKK(height,weight,old,active)
 {
     var zkk= (65.5 +(9,6 * weight) + (1,85 * height) - (4,7 * old))*active
-    return zkk;
+    return zkk.toFixed(2);
 }
 
 

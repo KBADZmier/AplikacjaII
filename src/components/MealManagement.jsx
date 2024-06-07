@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import ProgressBar from "@ramonak/react-progress-bar"
 function MealManagement() {
   const token = localStorage.getItem('token');
   const [meals, setMeals] = useState([]);
@@ -21,11 +21,30 @@ function MealManagement() {
   const [carboSum, setCarboSum] = useState(0);
   const [fatSum, setFatSum] = useState(0);
   const [proteinSum, setProteinSum] = useState(0);
-
+  const [existingUserData, setExistingUserData] = useState(null);
   useEffect(() => {
+    fetchUserData();
     fetchUserMeals();
     fetchAvailableFoods();
+    
   }, []);
+
+
+
+  const fetchUserData = async () => {
+    try {
+        const response = await axios.get('http://localhost:5000/user/info', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        setExistingUserData(response.data);
+        
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+    }
+};
+console.log(existingUserData);
 
   const fetchUserMeals = async () => {
     try {
@@ -55,11 +74,6 @@ function MealManagement() {
         });
       });
 
-
-
-
-
-      
       setKcalSum(totalKcal);
       setCarboSum(totalCarbo);
       setFatSum(totalFat);
@@ -126,7 +140,6 @@ function MealManagement() {
         }
       });
       fetchUserMeals();
-
       setNewFoodItem({
         mealType: '',
         foodId: '',
@@ -153,12 +166,24 @@ function MealManagement() {
         }
       });
       fetchUserMeals();
+    
     } catch (error) {
       console.error('Error deleting food from meal:', error);
     }
   };
   
-
+  const move = () => {
+    if (width === 0) {
+      const id = setInterval(() => {
+        if (width >= 100) {
+          clearInterval(id);
+          setWidth(0);
+        } else {
+          setWidth(prevWidth => prevWidth + 1);
+        }
+      }, 10);
+    }
+  };
   return (
     <div>
       <h1>Posiłki użytkownika</h1>
@@ -186,7 +211,7 @@ function MealManagement() {
             <ul>
               {meal.foodItems.map(item => (
                 <li key={item.foodId._id}>
-                  {item.foodId.Nazwa}: {item.quantity} x{item.foodId.Jednostka} ({item.foodId.Kcal} Kcal, {item.foodId.Ilosc_tluszczu}g tłuszczu, {item.foodId.Ilosc_bialka}g białka, {item.foodId.Ilosc_weglowodanow}g węglowodanów)
+                  {item.foodId.Nazwa}: {item.quantity} x {item.foodId.Jednostka} ({item.foodId.Kcal} Kcal, {item.foodId.Ilosc_tluszczu}g tłuszczu, {item.foodId.Ilosc_bialka}g białka, {item.foodId.Ilosc_weglowodanow}g węglowodanów)
                   <button onClick={() => deleteFoodFromMeal(meal._id, item.foodId._id)}>Usuń produkt</button>
                 </li>
               ))}
@@ -194,10 +219,21 @@ function MealManagement() {
           </li>
         ))}
       </ul>
-      <div>Spożycie kalorii: {kcalSum}</div>
-      <div>Spożycie białka: {proteinSum}</div>
-      <div>Spożycie węglowodanów: {carboSum}</div>
-      <div>Spożycie tłuszczu: {fatSum}</div>
+      {existingUserData&& (
+        <div>
+      <div>Spożycie kalorii: {kcalSum} Zapotrzebowanie:{existingUserData.kcalDemand}g</div>
+      <ProgressBar width='200px' completed={kcalSum} maxCompleted={existingUserData.kcalDemand} />
+
+      <div>Spożycie białka: {proteinSum} Zapotrzebowanie:{existingUserData.proteinDemand}g</div>
+      <ProgressBar width='200px' completed={proteinSum} maxCompleted={existingUserData.proteinDemand} />
+
+      <div>Spożycie węglowodanów: {carboSum} Zapotrzebowanie:{existingUserData.carboDemand}g</div>
+      <ProgressBar width='200px' completed={carboSum} maxCompleted={existingUserData.carboDemand} />
+
+      <div>Spożycie tłuszczu: {fatSum}  Zapotrzebowanie:{existingUserData.fatDemand}g</div>
+      <ProgressBar width='200px' completed={fatSum} maxCompleted={existingUserData.fatDemand} />
+      </div>
+      )};
     </div>
   );
 }

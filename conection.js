@@ -73,7 +73,7 @@ app.delete('/api/foods/:id', authorizeRole(['admin']),async (req, res) => {
   });
 
   app.post('/user/info', authenticateToken, async (req, res) => {
-    const { height, weight, old, gender, activitylvl } = req.body;
+    const { height, weight, old, gender, activitylvl, targetD, proteinDemand,carboDemand,fatDemand,kcalDemand } = req.body;
     try {
         const username = req.user.username;
         const user = await User.findOne({ username });
@@ -86,6 +86,11 @@ app.delete('/api/foods/:id', authorizeRole(['admin']),async (req, res) => {
         user.old = old;
         user.gender = gender;
         user.activitylvl = activitylvl;
+        user.targetD = targetD;
+        user.proteinDemand=proteinDemand;
+        user.carboDemand=carboDemand;
+        user.fatDemand=fatDemand;
+        user.kcalDemand=kcalDemand;
         await user.save();
 
         res.status(200).send('Survey data saved successfully');
@@ -111,7 +116,7 @@ app.get("/user/info", authenticateToken, async (req, res) => {
 
 
 app.put('/user/info', authenticateToken, async (req, res) => {
-  const { height, weight, old, gender, activitylvl } = req.body;
+  const { height, weight, old, gender, activitylvl,targetD,proteinDemand,carboDemand,fatDemand,kcalDemand  } = req.body;
   try {
       const username = req.user.username;
       const user = await User.findOne({ username });
@@ -124,6 +129,11 @@ app.put('/user/info', authenticateToken, async (req, res) => {
       user.old = old;
       user.gender = gender;
       user.activitylvl = activitylvl;
+      user.targetD = targetD;
+      user.proteinDemand=proteinDemand;
+      user.carboDemand=carboDemand;
+      user.fatDemand=fatDemand;
+      user.kcalDemand=kcalDemand;
       await user.save();
 
       res.status(200).send('User data updated successfully');
@@ -179,6 +189,7 @@ app.post('/api/meals', authenticateToken, async (req, res) => {
 
 app.get('/api/meals', authenticateToken, async (req, res) => {
   const userId = req.user._id;
+
   const today = new Date().setHours(0, 0, 0, 0);
 
   try {
