@@ -35,7 +35,7 @@ username=localStorage.getItem('username');
               <div className="auth-section">
                 <span className="username">{username}!</span>
                 <button onClick={handleLogout} className="logout-button">
-                  Logout
+                  Wyloguj
                 </button>
               </div>
             ) : (

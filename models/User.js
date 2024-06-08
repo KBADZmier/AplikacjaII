@@ -19,5 +19,6 @@ const userSchema = new Schema({
     fatDemand:{type:Number},
     kcalDemand:{type:Number}
 });
+const User = mongoose.model('User', userSchema);
+export { User };
 
-export default mongoose.model('User', userSchema);

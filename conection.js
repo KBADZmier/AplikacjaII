@@ -3,9 +3,8 @@ import mongoose from 'mongoose';
 import { Food } from './models/Food.js';
 import bodyParser from 'body-parser';
 import router from './login.js'
-import User from './models/User.js';
 import  { Meal }  from './models/Meals.js';
-
+import { User } from './models/User.js';
 import authenticateToken, { authorizeRole } from './authenticateToken.js';
 
 const app = express();
@@ -205,6 +204,43 @@ app.get('/api/meals', authenticateToken, async (req, res) => {
   }
 });
 
+app.get('/api/meals/:date', authenticateToken, async (req, res) => {
+  const userId = req.user._id;
+  const selectedDate = new Date(req.params.date);
+
+  try {
+    const meals = await Meal.find({
+      userId,
+      date: {
+        $gte: selectedDate,
+        $lt: new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000) //+1 aby caly dzien wyswietlic
+      }
+    }).populate('foodItems.foodId');
+    res.send(meals);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server Error');
+  }
+});
+
+
+app.get('/api/Allmeals', authenticateToken, async (req, res) => {
+  const userId = req.user._id;
+
+
+  try {
+    const meals = await Meal.find({
+      userId,
+    }).populate('foodItems.foodId');
+    res.send(meals);
+    console.log(meals)
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server Error');
+  }
+});
+
+
 
 app.delete('/api/meals/:mealId/foods/:foodItemId', authenticateToken, async (req, res) => {
   const { mealId, foodItemId } = req.params;
@@ -232,7 +268,15 @@ app.delete('/api/meals/:mealId/foods/:foodItemId', authenticateToken, async (req
 
 
 
-
+app.get("/api/GetUser", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+});
 
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,4 +1,4 @@
-// Admin.jsx
+//można tu coś ciekawego dodać
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,8 +15,8 @@ function Admin() {
 
     return (
         <div>
-            <h1>Admin Dashboard</h1>
-            <p>Welcome to the admin dashboard. Here you can manage users and content.</p>
+            <h1>Panel sterowania</h1>
+            <p></p> 
         </div>
     );
 }
