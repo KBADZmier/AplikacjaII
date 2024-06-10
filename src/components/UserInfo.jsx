@@ -20,6 +20,18 @@ const activityDescriptions = {
     6: 'Ciężka praca fizyczna, codzienny trening'
 };
 
+const targetDiet = {
+    1: 0.8,
+    2: 1.0,
+    3: 1.2
+};
+
+const targetDietDescription = {
+    1: 'Utrata masy ciała',
+    2: 'Utrzymanie masy ciała',
+    3: 'Przybranie masy mięśniowej'
+};
+
 function UserInfo() {
     const token = localStorage.getItem('token');
     const [formData, setFormData] = useState({
@@ -27,14 +39,24 @@ function UserInfo() {
         weight: 0,
         old: 0,
         gender: '',
-        activitylvl: 1 // Domyślny poziom aktywności
+        activitylvl: 1, // Domyślny poziom aktywności
+        targetD: 2,
+        proteinDemand: 0,
+        carboDemand: 0,
+        fatDemand: 0,
+        kcalDemand: 0
     });
     const [existingData, setExistingData] = useState(null);
-
+ 
     useEffect(() => {
         fetchUserData();
     }, []);
-
+    useEffect(() => {
+        if (existingData) {
+            calculateNutrition();
+        }
+    }, [existingData]); 
+  
     const fetchUserData = async () => {
         try {
             const response = await axios.get('http://localhost:5000/user/info', {
@@ -69,10 +91,41 @@ function UserInfo() {
     };
 
     const handleUpdateData = async () => {
-        fetchUserData(); // aktualne dane 
+        fetchUserData(); // Aktualizuje dane
     };
 
+    const calculateNutrition = () => {
+        if (!existingData) return null;
 
+        const { height, weight, old, gender, activitylvl, targetD } = existingData;
+
+        let kcalDemand = gender === 'meska'
+            ? ZKM(height, weight, old, activityLevels[activitylvl])
+            : ZKK(height, weight, old, activityLevels[activitylvl]);
+
+        let proteinDemand = targetD === 3 ? weight * 2 : weight * 1.5;
+
+        let carboDemand = targetD === 3
+            ? (kcalDemand * 0.50 / 4).toFixed(0)
+            : (kcalDemand * 0.45 / 4).toFixed(0);
+
+        let fatDemand = targetD === 3
+            ? (kcalDemand * 0.20 / 9).toFixed(0)
+            : (kcalDemand * 0.25 / 9).toFixed(0);
+        formData.carboDemand=carboDemand;
+        formData.fatDemand=fatDemand;
+        formData.kcalDemand=kcalDemand;
+        formData.proteinDemand=proteinDemand;
+        return {
+            proteinDemand,
+            carboDemand,
+            fatDemand,
+            kcalDemand
+        };
+        
+    };
+
+    const nutritionData = calculateNutrition();
     return (
         <form onSubmit={handleSubmit}>
             {existingData && (
@@ -83,35 +136,43 @@ function UserInfo() {
                     <p>Wiek: {existingData.old}</p>
                     <p>Płeć: {existingData.gender}</p>
                     <p>Poziom aktywności: {activityDescriptions[existingData.activitylvl]}</p>
+                    <p>Cel diety: {targetDietDescription[existingData.targetD]}</p>
                     <button type="button" onClick={handleUpdateData}>Aktualizuj dane</button>
                 </div>
             )}
             <div>
-                <label>Height:</label>
+                <label>Wzrost:</label>
                 <input type="number" name="height" value={formData.height} onChange={handleChange} required />
             </div>
             <div>
-                <label>Weight:</label>
+                <label>Waga:</label>
                 <input type="number" name="weight" value={formData.weight} onChange={handleChange} required />
             </div>
             <div>
-                <label>Old:</label>
+                <label>Wiek:</label>
                 <input type="number" name="old" value={formData.old} onChange={handleChange} required />
             </div>
             <div>
-                <label>Gender:</label>
+                <label>Płeć:</label>
                 <select name="gender" value={formData.gender} onChange={handleChange} required>
                     <option value="">Select</option>
-                    <option value="zenska">Female</option>
-                    <option value="meska">Male</option>
+                    <option value="zenska">Kobieta</option>
+                    <option value="meska">Mężczyzna</option>
                 </select>
             </div>
             <div>
-                <label>Activity Level:</label>
+                <label>Poziom aktywności fizycznej:</label>
                 <select name="activitylvl" value={formData.activitylvl} onChange={handleChange} required>
-                    <option value="">Select</option>
                     {Object.keys(activityDescriptions).map(level => (
                         <option key={level} value={level}>{activityDescriptions[level]}</option>
+                    ))}
+                </select>
+            </div>
+            <div>
+                <label>Twój cel:</label>
+                <select name="targetD" value={formData.targetD} onChange={handleChange} required>
+                    {Object.keys(targetDietDescription).map(level => (
+                        <option key={level} value={level}>{targetDietDescription[level]}</option>
                     ))}
                 </select>
             </div>
@@ -120,16 +181,18 @@ function UserInfo() {
                 {existingData && <label>BMI: {forPersonBmi(existingData.height, existingData.weight)}</label>}
             </div>
             <div>
-                {existingData && (
-                    <label>Zapotrzebowanie kaloryczne:
-                        {existingData.gender === 'meska' 
-                            ? `ZKM: ${ZKM(existingData.height, existingData.weight, existingData.old, activityLevels[existingData.activitylvl])}`
-                            : `ZKK: ${ZKK(existingData.height, existingData.weight, existingData.old, activityLevels[existingData.activitylvl])}`}
-                    </label>
+                {nutritionData && (
+                    <div>
+                        <p>Zapotrzebowanie kaloryczne: {nutritionData.kcalDemand}</p>
+                        <p>Zapotrzebowanie na białko: {nutritionData.proteinDemand}g</p>
+                        <p>Zapotrzebowanie na węglowodany: {nutritionData.carboDemand}g</p>
+                        <p>Zapotrzebowanie na tłuszcze: {nutritionData.fatDemand}g</p>
+                        <p>
+                            Aby utrzymać swoją wagę, powinieneś spożywać wymaganą liczbę kalorii, która jest obliczona na podstawie Twojej płci, wzrostu, wagi, wieku i poziomu aktywności fizycznej. Pamiętaj, że te wartości mogą się różnić w zależności od indywidualnych potrzeb i celów zdrowotnych.
+                        </p>
+                    </div>
                 )}
-                     
             </div>
-            <button type="submit">Submit</button>
         </form>
     );
 }

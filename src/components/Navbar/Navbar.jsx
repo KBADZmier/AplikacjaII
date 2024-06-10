@@ -2,7 +2,16 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import "./Navbar.css";
 
-const Navbar = ({ token, username, handleLogout }) => {
+const Navbar = ({ token, username }) => {
+token=localStorage.getItem('token');
+username=localStorage.getItem('username');
+  const handleLogout = () => {
+    
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("role");
+    window.location.reload(false);
+  };
   return (
     <div className="navbaro">
       <nav className="navbar">
@@ -26,7 +35,7 @@ const Navbar = ({ token, username, handleLogout }) => {
               <div className="auth-section">
                 <span className="username">{username}!</span>
                 <button onClick={handleLogout} className="logout-button">
-                  Logout
+                  Wyloguj
                 </button>
               </div>
             ) : (

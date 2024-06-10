@@ -24,7 +24,7 @@ function LoginUser({ setToken, setUsername, setRole }) {
       if (role === "admin") {
         navigate("/admin");
       } else {
-        navigate("/");
+        navigate("/info");
       }
     } catch (error) {
       console.error("Invalid login credentials", error);

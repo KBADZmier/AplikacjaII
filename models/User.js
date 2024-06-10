@@ -12,7 +12,13 @@ const userSchema = new Schema({
     weight:{type: Number},
     old:{type:Number},
     gender:{ type: String, enum: ['zenska', 'meska']},
-    activitylvl:{type: Number, enum: [1,2,3,4,5,6]}
+    activitylvl:{type: Number, enum: [1,2,3,4,5,6]},
+    targetD:{type:Number,enum:[1,2,3]},
+    proteinDemand:{type:Number},
+    carboDemand:{type:Number},
+    fatDemand:{type:Number},
+    kcalDemand:{type:Number}
 });
+const User = mongoose.model('User', userSchema);
+export { User };
 
-export default mongoose.model('User', userSchema);

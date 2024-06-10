@@ -19,7 +19,7 @@ import MealManagement from "./components/MealManagement";
 import Home from "./components/HomePage/Home";
 import "./App.css";
 import Footer from "./components/Footer/Footer";
-
+import GetUser from "./components/GetUser"
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [username, setUsername] = useState(
@@ -27,23 +27,16 @@ function App() {
   );
   const [role, setRole] = useState(localStorage.getItem("role") || "");
 
-  const handleLogout = () => {
-    setToken("");
-    setUsername("");
-    setRole("");
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("role");
-  };
+ 
 
   return (
     <Router>
       <Navbar />
       <div>
-        {/* <nav>
+         <nav>
           <ul>
             <li>
-              <Link to="/home">Hsirmaome</Link>
+              <Link to="/home">Strona głowna</Link>
             </li>
             {role === "user" && (
               <li>
@@ -52,17 +45,17 @@ function App() {
             )}
             {role === "user" && (
               <li>
-                <Link to="/AddFood">Add Food</Link>
+                <Link to="/AddFood">Dodaj produkt</Link>
               </li>
             )}
             {role === "admin" && (
               <li>
-                <Link to="/DeleteFood">Delete Food</Link>
+                <Link to="/DeleteFood">Usuwanie produktów</Link>
               </li>
             )}
             {role === "admin" && (
               <li>
-                <Link to="/AllFood">All Food</Link>
+                <Link to="/AllFood">Lista produktów</Link>
               </li>
             )}
             {role === "admin" && (
@@ -70,13 +63,18 @@ function App() {
                 <Link to="/admin">Admin</Link>
               </li>
             )}
+              {role === "admin" && (
+              <li>
+                <Link to="/GetUser">Lista użytkowników</Link>
+              </li>
+            )}
             {role === "user" && (
               <li>
-                <Link to="/info">Info</Link>
+                <Link to="/info">Informacje o użytkowniku</Link>
               </li>
             )}
           </ul>
-        </nav> */}
+        </nav> 
         <Routes>
           <Route path="/" element={<Navigate to="/home" />} />
           <Route path="/home" element={<Home />} />
@@ -99,6 +97,10 @@ function App() {
           <Route
             path="/admin"
             element={role === "admin" ? <Admin /> : <Navigate to="/" />}
+          />
+            <Route
+            path="/GetUser"
+            element={role === "admin" ? <GetUser /> : <Navigate to="/" />}
           />
           <Route
             path="/login"

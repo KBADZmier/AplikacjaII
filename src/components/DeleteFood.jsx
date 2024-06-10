@@ -31,18 +31,19 @@ function ProductList() {
   };
 
   return (
-    <div>
-      <h2>Lista produktów</h2>
-      {message && <p>{message}</p>}
-      <ul>
-        {products.map(product => (
-          <li key={product._id}>
-            {product.Nazwa ? `${product.Nazwa} - ${product.Rodzaj}` : 'Brak nazwy'}
-            <button onClick={() => handleDelete(product._id)}>Usuń</button>
-          </li>
-        ))}
-      </ul>
-    </div>
+<div>
+  <h2>Lista produktów</h2>
+  {message && <p>{message}</p>}
+  <div>
+    {products.map(product => (
+      <div key={product._id} className="product-item">
+        {product.Nazwa ? `${product.Nazwa} - ${product.Rodzaj}` : 'Brak nazwy'}
+        <button onClick={() => handleDelete(product._id)}>Usuń</button>
+      </div>
+    ))}
+  </div>
+</div>
+
   );
 }
 
