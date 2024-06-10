@@ -1,12 +1,12 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import "./Navbar.css";
 
-const Navbar = ({ token, username }) => {
-token=localStorage.getItem('token');
-username=localStorage.getItem('username');
+const Navbar = ({ token, username, role }) => {
+  token = localStorage.getItem("token");
+  role = localStorage.getItem("role");
+  username = localStorage.getItem("username");
   const handleLogout = () => {
-    
     localStorage.removeItem("token");
     localStorage.removeItem("username");
     localStorage.removeItem("role");
@@ -21,6 +21,42 @@ username=localStorage.getItem('username');
           </div>
           <div className="nav-items">
             <ul>
+              {role === "user" && (
+                <li>
+                  <Link to="/MealsManagement">Menu</Link>
+                </li>
+              )}
+              {role === "user" && (
+                <li>
+                  <Link to="/AddFood">Dodaj produkt</Link>
+                </li>
+              )}
+              {role === "admin" && (
+                <li>
+                  <Link to="/DeleteFood">Usuwanie produktów</Link>
+                </li>
+              )}
+              {role === "admin" && (
+                <li>
+                  <Link to="/AllFood">Lista produktów</Link>
+                </li>
+              )}
+              {role === "admin" && (
+                <li>
+                  <Link to="/admin">Admin</Link>
+                </li>
+              )}
+              {role === "admin" && (
+                <li>
+                  <Link to="/GetUser">Lista użytkowników</Link>
+                </li>
+              )}
+              {role === "user" && (
+                <li>
+                  <Link to="/info">Profil</Link>
+                </li>
+              )}
+
               <li>
                 <NavLink to="/home">Home</NavLink>
               </li>
@@ -34,7 +70,7 @@ username=localStorage.getItem('username');
             {token ? (
               <div className="auth-section">
                 <span className="username">{username}!</span>
-                <button onClick={handleLogout} className="logout-button">
+                <button onClick={handleLogout} className="login-button">
                   Wyloguj
                 </button>
               </div>

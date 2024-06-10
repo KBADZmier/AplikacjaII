@@ -95,7 +95,7 @@ function MealManagement() {
         const dates = [];
         response.data.forEach(meal => {
           const date = new Date(meal.date);
-          //tutaj sprawdzam duplikaty w bazie
+         
           if (!dates.find(existingDate => existingDate.getTime() === date.getTime())) {
             dates.push(date);
           }

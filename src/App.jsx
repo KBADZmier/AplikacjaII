@@ -19,7 +19,7 @@ import MealManagement from "./components/MealManagement";
 import Home from "./components/HomePage/Home";
 import "./App.css";
 import Footer from "./components/Footer/Footer";
-import GetUser from "./components/GetUser"
+import GetUser from "./components/GetUser";
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [username, setUsername] = useState(
@@ -27,54 +27,15 @@ function App() {
   );
   const [role, setRole] = useState(localStorage.getItem("role") || "");
 
- 
-
   return (
     <Router>
       <Navbar />
       <div>
-         <nav>
+        <nav>
           <ul>
-            <li>
-              <Link to="/home">Strona głowna</Link>
-            </li>
-            {role === "user" && (
-              <li>
-                <Link to="/MealsManagement">Menu</Link>
-              </li>
-            )}
-            {role === "user" && (
-              <li>
-                <Link to="/AddFood">Dodaj produkt</Link>
-              </li>
-            )}
-            {role === "admin" && (
-              <li>
-                <Link to="/DeleteFood">Usuwanie produktów</Link>
-              </li>
-            )}
-            {role === "admin" && (
-              <li>
-                <Link to="/AllFood">Lista produktów</Link>
-              </li>
-            )}
-            {role === "admin" && (
-              <li>
-                <Link to="/admin">Admin</Link>
-              </li>
-            )}
-              {role === "admin" && (
-              <li>
-                <Link to="/GetUser">Lista użytkowników</Link>
-              </li>
-            )}
-            {role === "user" && (
-              <li>
-                <Link to="/info">Informacje o użytkowniku</Link>
-              </li>
-            )}
+
           </ul>
-        </nav> 
+        </nav>
         <Routes>
           <Route path="/" element={<Navigate to="/home" />} />
           <Route path="/home" element={<Home />} />
@@ -98,7 +59,7 @@ function App() {
             path="/admin"
             element={role === "admin" ? <Admin /> : <Navigate to="/" />}
           />
-            <Route
+          <Route
             path="/GetUser"
             element={role === "admin" ? <GetUser /> : <Navigate to="/" />}
           />

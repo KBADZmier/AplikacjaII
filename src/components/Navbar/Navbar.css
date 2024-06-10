@@ -71,7 +71,7 @@ li a {
   color: #4d4c4c;
   font-size: 1.4rem;
   font-weight: bold;
-  padding-right: 25px;
+  padding: 10px 10px 10px 10px;
   text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.4);
   text-decoration: none;
 }
@@ -116,9 +116,22 @@ nav ul li a.active {
   margin-left: 15px;
 }
 
-.auth-section .username {
+.auth-section {
   margin-right: 10px;
   color: #000;
+}
+.username {
+  color: #313131;
+  font-size: 1.4rem;
+  border: 2px solid #333;
+  font-weight: bold;
+  padding: 5px 10px 5px 10px;
+  border-radius: 20px;
+  border-color: #c1ce9b;
+  text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.4);
+  margin-right: 10px;
+  box-shadow: 1px 2px 3px black;
+  text-decoration: none;
 }
 
 .logout-button {
