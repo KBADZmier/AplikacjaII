@@ -1,0 +1,37 @@
+.pago {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 300px;
+  margin-top: 100px;
+}
+
+.userss {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+}
+
+.userino {
+  font-size: 1.2rem;
+  background-color: #77767634;
+  padding: 10px;
+  border-radius: 10px;
+}
+.admin {
+  color: red;
+  font-weight: bold;
+  font-size: 1.4rem;
+}
+
+.user {
+  color: green;
+  font-weight: bold;
+  font-size: 1.4rem;
+}
+.qwe {
+  font-size: 1.4rem;
+  font-weight: bold;
+}

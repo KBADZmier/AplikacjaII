@@ -1,0 +1,70 @@
+.upper {
+  display: flex;
+  gap: 50px;
+}
+.form-section,
+.info-section {
+  flex: 1;
+  margin-right: 20px;
+  padding: 20px;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.form-section h2,
+.info-section h2,
+.nutrition-info h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.form-section label,
+.info-section label {
+  margin-bottom: 5px;
+  display: block;
+  font-weight: bold;
+  color: #666;
+}
+
+.form-section input,
+.form-section select {
+  width: 50%;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 5px black;
+}
+
+.lab {
+  color: #999;
+
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.dane {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #666;
+}
+
+.nutrition-info {
+  width: 100%;
+  padding: 20px;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.nutrition-info p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.bat {
+  display: flex;
+  margin-top: 10px;
+  justify-content: center;
+  align-items: center;
+}

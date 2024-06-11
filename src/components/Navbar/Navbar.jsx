@@ -30,20 +30,15 @@ const Navbar = ({ token, username, role }) => {
                 <li>
                   <Link to="/AddFood">Dodaj produkt</Link>
                 </li>
+              )}{" "}
+              {role === "admin" && (
+                <li>
+                  <Link to="/admin">Admin</Link>
+                </li>
               )}
               {role === "admin" && (
                 <li>
                   <Link to="/DeleteFood">Usuwanie produktów</Link>
-                </li>
-              )}
-              {role === "admin" && (
-                <li>
-                  <Link to="/AllFood">Lista produktów</Link>
-                </li>
-              )}
-              {role === "admin" && (
-                <li>
-                  <Link to="/admin">Admin</Link>
                 </li>
               )}
               {role === "admin" && (
@@ -56,15 +51,8 @@ const Navbar = ({ token, username, role }) => {
                   <Link to="/info">Profil</Link>
                 </li>
               )}
-
               <li>
                 <NavLink to="/home">Home</NavLink>
-              </li>
-              <li>
-                <NavLink to="/about">O nas</NavLink>
-              </li>
-              <li>
-                <NavLink to="/contact">Kontakt</NavLink>
               </li>
             </ul>
             {token ? (

@@ -1,0 +1,30 @@
+.pager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  max-width: 60%;
+}
+
+.product-item {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: rgba(107, 107, 107, 0.062);
+  text-align: center;
+  border-radius: 20px;
+  box-shadow: 1px 1px 4px black;
+}
+
+.lis {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
