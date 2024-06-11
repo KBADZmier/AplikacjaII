@@ -23,7 +23,12 @@ function ProductList() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/foods/${id}`);
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:5000/api/foods/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setProducts(products.filter((product) => product._id !== id));
       setMessage("Produkt usunięty pomyślnie!");
     } catch (error) {
@@ -31,7 +36,7 @@ function ProductList() {
       setMessage("Błąd usuwania produktu");
     }
   };
-
+  
   return (
     <ScrollArea.Root>
       <ScrollArea.Viewport>

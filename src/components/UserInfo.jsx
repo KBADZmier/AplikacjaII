@@ -40,7 +40,7 @@ function UserInfo() {
     weight: 0,
     old: 0,
     gender: "",
-    activitylvl: 1, // Domyślny poziom aktywności
+    activitylvl: 1,
     targetD: 2,
     proteinDemand: 0,
     carboDemand: 0,
@@ -52,11 +52,6 @@ function UserInfo() {
   useEffect(() => {
     fetchUserData();
   }, []);
-  useEffect(() => {
-    if (existingData) {
-      calculateNutrition();
-    }
-  }, [existingData]);
 
   const fetchUserData = async () => {
     try {
@@ -84,26 +79,49 @@ function UserInfo() {
           Authorization: `Bearer ${token}`,
         },
       });
-      alert("Survey submitted successfully");
+      calculateNutrition(formData);
+      alert("Dane zostały zapisane pomyślnie");
+      fetchUserData();
     } catch (error) {
-      console.error("Error submitting survey", error);
-      alert("Error submitting survey");
+      console.error("Błąd podczas zapisywania danych:", error);
+      alert("Błąd podczas zapisywania danych");
     }
   };
 
   const handleUpdateData = async () => {
-    fetchUserData(); // Aktualizuje dane
+    if (existingData) {
+      setFormData(existingData);
+      calculateNutrition(existingData);
+    } else {
+      calculateNutrition({
+        height: 0,
+        weight: 0,
+        old: 0,
+        gender: "",
+        activitylvl: 1,
+        targetD: 2,
+      });
+    }
   };
 
-  const calculateNutrition = () => {
-    if (!existingData) return null;
+  const calculateNutrition = (data) => {
+    const { height, weight, old, gender, activitylvl, targetD } = data;
 
-    const { height, weight, old, gender, activitylvl, targetD } = existingData;
+    if (!height || !weight || !old || !gender) {
+      setFormData((prevData) => ({
+        ...prevData,
+        carboDemand: 0,
+        fatDemand: 0,
+        kcalDemand: 0,
+        proteinDemand: 0,
+      }));
+      return;
+    }
 
     let kcalDemand =
       gender === "meska"
-        ? ZKM(height, weight, old, activityLevels[activitylvl])
-        : ZKK(height, weight, old, activityLevels[activitylvl]);
+        ? (ZKM(height, weight, old, activityLevels[activitylvl])).toFixed(0)
+        : (ZKK(height, weight, old, activityLevels[activitylvl])/10).toFixed(0);
 
     let proteinDemand = targetD === 3 ? weight * 2 : weight * 1.5;
 
@@ -117,20 +135,19 @@ function UserInfo() {
         ? ((kcalDemand * 0.2) / 9).toFixed(0)
         : ((kcalDemand * 0.25) / 9).toFixed(0);
 
-    formData.carboDemand = carboDemand;
-    formData.fatDemand = fatDemand;
-    formData.kcalDemand = kcalDemand;
-    formData.proteinDemand = proteinDemand;
-
-    return {
-      proteinDemand,
+    setFormData((prevData) => ({
+      ...prevData,
       carboDemand,
       fatDemand,
       kcalDemand,
-    };
+      proteinDemand,
+    }));
   };
 
-  const nutritionData = calculateNutrition();
+  useEffect(() => {
+    handleUpdateData();
+  }, []);
+
   return (
     <div className="container">
       <div className="upper">
@@ -212,9 +229,8 @@ function UserInfo() {
                   </option>
                 ))}
               </select>
-            </div>{" "}
+            </div>
             <div className="bat">
-              {" "}
               <button type="submit">Zatwierdź</button>
             </div>
           </form>
@@ -227,32 +243,26 @@ function UserInfo() {
               <span className="dane">Wzrost:</span> {existingData.height}
             </p>
             <p>
-              {" "}
               <span className="dane">Waga: </span>
               {existingData.weight}
             </p>
             <p>
-              {" "}
               <span className="dane">Wiek: </span>
               {existingData.old}
             </p>
             <p>
-              {" "}
               <span className="dane">Płeć:</span> {existingData.gender}
             </p>
             <p>
-              {" "}
               <span className="dane">Poziom aktywności:</span>{" "}
               {activityDescriptions[existingData.activitylvl]}
             </p>
             <p>Cel diety: {targetDietDescription[existingData.targetD]}</p>
             <div className="bat">
-              {" "}
               <button type="button" onClick={handleUpdateData}>
                 Aktualizuj dane
               </button>
             </div>
-
             <label>
               BMI: {forPersonBmi(existingData.height, existingData.weight)}
             </label>
@@ -260,22 +270,20 @@ function UserInfo() {
         )}
       </div>
 
-      {nutritionData && (
-        <div className="nutrition-info">
-          <h2>Twoje zapotrzebowanie</h2>
-          <p>Zapotrzebowanie kaloryczne: {nutritionData.kcalDemand}</p>
-          <p>Zapotrzebowanie na białko: {nutritionData.proteinDemand}g</p>
-          <p>Zapotrzebowanie na węglowodany: {nutritionData.carboDemand}g</p>
-          <p>Zapotrzebowanie na tłuszcze: {nutritionData.fatDemand}g</p>
-          <p>
-            Aby utrzymać swoją wagę, powinieneś spożywać wymaganą liczbę
-            kalorii, która jest obliczona na podstawie Twojej płci, wzrostu,
-            wagi, wieku i poziomu aktywności fizycznej. Pamiętaj, że te wartości
-            mogą się różnić w zależności od indywidualnych potrzeb i celów
-            zdrowotnych.
-          </p>
-        </div>
-      )}
+      <div className="nutrition-info">
+        <h2>Twoje zapotrzebowanie</h2>
+        <p>Zapotrzebowanie kaloryczne: {formData.kcalDemand}</p>
+        <p>Zapotrzebowanie na białko: {formData.proteinDemand}g</p>
+        <p>Zapotrzebowanie na węglowodany: {formData.carboDemand}g</p>
+        <p>Zapotrzebowanie na tłuszcze: {formData.fatDemand}g</p>
+        <p>
+          Aby utrzymać swoją wagę, powinieneś spożywać wymaganą liczbę kalorii,
+          która jest obliczona na podstawie Twojej płci, wzrostu, wagi, wieku i
+          poziomu aktywności fizycznej. Pamiętaj, że te wartości mogą się różnić
+          w zależności od indywidualnych potrzeb i celów zdrowotnych.
+        </p>
+      </div>
+      
     </div>
   );
 }
