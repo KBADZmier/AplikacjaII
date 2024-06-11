@@ -27,6 +27,4 @@ function ZKK(height,weight,old,active)
     return zkk.toFixed(2);
 }
 
-
-
 export { forPersonBmi, ZKM, ZKK };
